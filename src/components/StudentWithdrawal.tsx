@@ -16,7 +16,7 @@ export interface IWithdrawal {
 
 const StudentWithdrawal = () => {
   const [openPopup, setOpenPopup] = useState(false);
-  const [data, setData] = useState<IWithdrawal[]>([
+  const [iWithdrawals, setIWithdrawals] = useState<IWithdrawal[]>([
     {
       id: 1,
       year: "2023",
@@ -28,38 +28,56 @@ const StudentWithdrawal = () => {
       notes: "لا توجد ملاحظات",
     },
   ]);
+  // const getAllWithdrawals = () => {
+  //   setData([])
+  // }
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
 
   const handleSelectionChanged = (e: any) => {
     setSelectedRowKeys(e.selectedRowKeys);
   };
 
+  const handleDeleteWithdrawal = (id: number) => {
+    setIWithdrawals((prevData) => prevData.filter((row) => row.id !== id));
+  };
+
   const handleDeleteSelected = () => {
-    const remainingData = data.filter(
-      (row) => !selectedRowKeys.includes(row.year)
+    const remainingData = iWithdrawals.filter(
+      (row) => !selectedRowKeys.includes(row.id)
     );
-    setData(remainingData);
+    setIWithdrawals(remainingData);
   };
 
   const handleDeleteAll = () => {
-    setData([]);
+    setIWithdrawals([]);
+  };
+
+  const handleAddWithdrawal = (newWithdrawal: IWithdrawal) => {
+    setIWithdrawals((prevData) => [...prevData, newWithdrawal]);
   };
 
   return (
-    <>
-      <h2>شاشة انسحاب الطالب</h2>
+    <div className="container">
+      <h1>شاشة انسحاب الطالب</h1>
       <Button
         text="إجراء الانسحاب"
         icon="plus"
         onClick={() => setOpenPopup(!openPopup)}
-        type="success"
+        type="default"
       />
-      <div>
+      <h2>بيانات الانسحاب</h2>
+      <div style={{ marginBottom: "20px" }}>
         <DataGrid
-          dataSource={data}
+          dataSource={iWithdrawals}
           keyExpr="id"
           selectedRowKeys={selectedRowKeys}
           onSelectionChanged={handleSelectionChanged}
+          showBorders={true}
+          showRowLines
+          columnAutoWidth
+          rtlEnabled
+          wordWrapEnabled={true}
+          className="iWithdrawals-data-grid"
         >
           <Selection mode="multiple" />
           <Column dataField="year" caption="العام الدراسي" alignment="center" />
@@ -73,6 +91,7 @@ const StudentWithdrawal = () => {
             dataField="semster"
             caption="الفصل الدراسي"
             alignment="center"
+            width={150}
           />
           <Column dataField="reson" caption="سبب الانسحاب" alignment="center" />
           <Column
@@ -81,17 +100,42 @@ const StudentWithdrawal = () => {
             alignment="center"
           />
           <Column dataField="notes" caption="الملاحظات" alignment="center" />
+          <Column
+            caption="إجراءات"
+            cellRender={(data) => (
+              <Button
+                icon="trash"
+                type="danger"
+                onClick={() => handleDeleteWithdrawal(data.data.id)}
+              />
+            )}
+            alignment="center"
+          />
         </DataGrid>
       </div>
-      <Button type="danger" onClick={handleDeleteSelected}>
-        حذف الصفوف المحددة
-      </Button>
-      <Button type="danger" onClick={handleDeleteAll}>
-        حذف الكل
-      </Button>
+      <div>
+        <Button
+          type="danger"
+          onClick={handleDeleteSelected}
+          disabled={!selectedRowKeys.length}
+          style={{ marginLeft: "10px" }}
+          icon="trash"
+          text=" حذف الصفوف المحددة"
+        />
+        <Button
+          type="danger"
+          onClick={handleDeleteAll}
+          icon="trash"
+          text="حذف الكل"
+        />
+      </div>
 
-      <AddWithdrawalPopup openPopup={openPopup} setOpenPopup={setOpenPopup} />
-    </>
+      <AddWithdrawalPopup
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+        handleAddWithdrawal={handleAddWithdrawal}
+      />
+    </div>
   );
 };
 

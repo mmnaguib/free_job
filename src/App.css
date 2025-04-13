@@ -1,13 +1,41 @@
-body{
+body {
+  font-family: Arial, sans-serif;
   direction: rtl;
+  text-align: right;
+  padding: 20px;
+  background-color: #f5f5f5;
 }
-
-.flexDiv{
+.container {
+  max-width: 1100px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.flexDiv {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: 15px;
 }
 
-.flexDiv div{
-  flex-grow: 1;
+.flexDiv > div {
+  width: 50%;
+  position: relative;
+  min-width: 0;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.iWithdrawals-data-grid .dx-datagrid-headers.dx-bordered-top-view {
+  background-color: #f5f5f5 !important;
+  font-weight: bold;
+  color: #333 !important;
 }
